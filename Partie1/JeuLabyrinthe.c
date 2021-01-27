@@ -1,3 +1,8 @@
+/*
+LA COMMANDE POUR COMPILER EST :
+gcc -Wall JeuLabyrinthe.c -o JeuLabyrinthe.exe
+*/
+
 #include <stdio.h>
 
 #define L 11 // Nombre de COLONNES du tableau
