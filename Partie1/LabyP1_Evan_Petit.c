@@ -1,32 +1,36 @@
-#include <iostream>
+/*
+LA COMMANDE POUR COMPILER EST :
+gcc -Wall LabyP1_Evan_Petit.c -o LabyP1.exe
+*/
 
-#define L 11 // Nombre de COLONNES du tableau
-#define M 10 // Nombre de LIGNES du tableau
+#include <stdio.h>
+#include <stdlib.h>
+
+int NB_COLONNES = 11; // Nombre de COLONNES du tableau
+int NB_LIGNES = 10; // Nombre de LIGNES du tableau
 
 #define AFF_VIDE '-'  //Caractère représentant les cases vides pour l’affichage
 #define AFF_MUR  'X'  //Caractère représentant les murs pour l’affichage
 #define AFF_BORD ' '  //Caractère représentant les bords pour l’affichage
 
-char Grille[L*M] = {0};  // Tableau global contenant les caractères servant à afficher le labyrinthe
-
-using namespace std;
+char* Grille=NULL;  // Tableau global contenant les caractères servant à afficher le labyrinthe
 
 //retourne l'identifiant d'une case dont on donne les coordonnées
 int getID(int ligne, int colonne)
 {
-    return(ligne*L + colonne);
+    return(ligne*NB_COLONNES + colonne);
 }
 
 //retourne la première coordonnée (ligne) d'une case dont on donne l'identifiant
 int getLigne(int id)
 {
-    return(id/L);
+    return(id/NB_COLONNES);
 }
 
 //retourne la deuxième coordonnée (colonne) d'une case dont on donne l'identifiant
-int getColonne(int id)
+int getCol(int id)
 {
-    return(id%L);
+    return(id%NB_COLONNES);
 }
 
 //place la valeur x dans le case de coordonnée (i,j)
@@ -49,11 +53,11 @@ void affiche()
     char bord = AFF_BORD; // On récupère le #define contenant le caractère bord
 
     // Affichage caractère par caractère en bouclant sur le tableau
-    for(int i = -1 ; i <= M ; i++)
+    for(int i = -1 ; i <= NB_LIGNES ; i++)
     {
-        for(int j = -1 ; j <= L ; j++)
+        for(int j = -1 ; j <= NB_COLONNES ; j++)
         {
-            if((i == -1) | (j == -1) | (i == M) | (j == L))
+            if((i == -1) | (j == -1) | (i == NB_LIGNES) | (j == NB_COLONNES))
                 printf("%c",bord);
 
             else
@@ -71,6 +75,7 @@ void affiche()
 
 int main()
 {
+    Grille = (char*)calloc(NB_LIGNES*NB_COLONNES,sizeof(char));
     modifie(1,1,1);
     modifie(1,2,1);
     modifie(2,9,1);
@@ -82,6 +87,8 @@ int main()
     modifie(9,8,1);
     modifie(10,8,1);
     affiche();
+
+    free(Grille);
     
     return 0;
 }
