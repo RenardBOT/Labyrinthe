@@ -9,9 +9,9 @@ gcc -Wall LabyP1_Evan_Petit.c -o LabyP1.exe
 int NB_COLONNES = 11; // Nombre de COLONNES du tableau
 int NB_LIGNES = 10; // Nombre de LIGNES du tableau
 
-#define AFF_VIDE '-'  //Caractère représentant les cases vides pour l’affichage
-#define AFF_MUR  'X'  //Caractère représentant les murs pour l’affichage
-#define AFF_BORD ' '  //Caractère représentant les bords pour l’affichage
+char AFF_VIDE = '-';  //Caractère représentant les cases vides pour l’affichage
+char AFF_MUR = 'X';  //Caractère représentant les murs pour l’affichage
+char AFF_BORD = ' ';  //Caractère représentant les bords pour l’affichage
 
 char* Grille=NULL;  // Tableau global contenant les caractères servant à afficher le labyrinthe
 

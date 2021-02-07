@@ -6,9 +6,10 @@ gcc -Wall JeuLabyrinthe.c -o JeuLabyrinthe.exe
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
 
-int NB_COLONNES = 12; // Nombre de COLONNES du tableau
-int NB_LIGNES = 12; // Nombre de LIGNES du tableau
+int NB_COLONNES = 7; // Nombre de COLONNES du tableau
+int NB_LIGNES = 7; // Nombre de LIGNES du tableau
 
 char AFF_VIDE = '-';  //Caractère représentant les cases vides pour l’affichage
 char AFF_MUR = 'X';  //Caractère représentant les murs pour l’affichage
@@ -16,7 +17,7 @@ char AFF_BORD = ' ';  //Caractère représentant les bords pour l’affichage
 
 char* Grille=NULL;  // Tableau global contenant les caractères servant à afficher le labyrinthe
 
-char* Pile = NULL;
+int* Pile = NULL;
 int Sommet = -1;
 
 // # GESTION DE LA PILE
@@ -80,6 +81,12 @@ char lit(int ligne, int colonne)
     return Grille[getID(ligne,colonne)];
 }
 
+// Retourne la taille de la grille
+int getTaille()
+{
+    return NB_COLONNES*NB_LIGNES;
+}
+
 // Retourne le nombre de cases blanches
 int getBlanches()
 {
@@ -101,7 +108,7 @@ int getBlanches()
 // Retourne l'id d'une case blanche aléatoire
 int getRandBlanche()
 {
-    /*int flag = 0;
+    int flag = 0;
     int id = -1;
     int duree = 0;
     while(flag == 0 && duree < 1000000)
@@ -109,10 +116,11 @@ int getRandBlanche()
             id = (rand() % ((NB_COLONNES * NB_LIGNES)-2)+1);
             if(Grille[id] == 0) flag = 1;
             duree++;
-        }*/
+        }
     
+    return id;
 
-    int j = 0;
+    /*int j = 0;
     int taille = getBlanches();
     int blanches[taille] ;
     for(int i = 0 ; i<(NB_COLONNES*NB_LIGNES) ; i++)
@@ -126,7 +134,7 @@ int getRandBlanche()
     }
 
     int id = (rand() % ((taille-2)+1));
-    return blanches[id];
+    return blanches[id];*/
 }
 
 // Marque une case dont on passe l'id en paramètre (vaut 2 dans grille et est empilée)
@@ -196,7 +204,7 @@ int connexe()
 
 void genLaby(int k)
 {
-    int duree = 5000000;
+    int duree = 1000000;
     int flag = 0;
     int i = 0;
     int id = -1;
@@ -212,7 +220,6 @@ void genLaby(int k)
             {
                 flag = 1;
             }
-        
         i++;
     }
     printf("Nombre d'operations = %d\n",i);
@@ -257,16 +264,17 @@ void affiche()
 
 int main()
 {
+    system("cls");
     Grille = (char*)calloc(NB_LIGNES*NB_COLONNES,sizeof(char));
-    Pile = (char*)calloc(NB_LIGNES*NB_COLONNES,sizeof(char));
+    Pile = (int*)calloc(NB_LIGNES*NB_COLONNES,sizeof(int));
 
-    int taille = 80;
+    int taille = 30;
 
     srand((unsigned)time(NULL));
     genLaby(taille);
     affiche();
 
-    printf("Cases blanches : %d  |  k = %d\nConnexite : %d",getBlanches(),taille,connexe());
+    printf("Cases blanches : %d  |  k = %d\nConnexite (1 oui | 0 non) : %d",getBlanches(),taille,connexe());
 
     free(Grille);
     free(Pile);
