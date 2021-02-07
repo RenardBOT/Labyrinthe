@@ -7,8 +7,8 @@ gcc -Wall JeuLabyrinthe.c -o JeuLabyrinthe.exe
 #include <stdlib.h>
 #include <time.h>
 
-int NB_COLONNES = 11; // Nombre de COLONNES du tableau
-int NB_LIGNES = 10; // Nombre de LIGNES du tableau
+int NB_COLONNES = 12; // Nombre de COLONNES du tableau
+int NB_LIGNES = 12; // Nombre de LIGNES du tableau
 
 char AFF_VIDE = '-';  //Caractère représentant les cases vides pour l’affichage
 char AFF_MUR = 'X';  //Caractère représentant les murs pour l’affichage
@@ -101,17 +101,32 @@ int getBlanches()
 // Retourne l'id d'une case blanche aléatoire
 int getRandBlanche()
 {
-    int flag = 0;
+    /*int flag = 0;
     int id = -1;
     int duree = 0;
-    while(flag == 0 && duree < 10000)
+    while(flag == 0 && duree < 1000000)
         {
             id = (rand() % ((NB_COLONNES * NB_LIGNES)-2)+1);
             if(Grille[id] == 0) flag = 1;
             duree++;
-        }
+        }*/
     
-    return id;  
+
+    int j = 0;
+    int taille = getBlanches();
+    int blanches[taille] ;
+    for(int i = 0 ; i<(NB_COLONNES*NB_LIGNES) ; i++)
+    {
+        if (Grille[i] == 0)
+        {
+            blanches[j] = i;
+            j++;
+        }   
+        
+    }
+
+    int id = (rand() % ((taille-2)+1));
+    return blanches[id];
 }
 
 // Marque une case dont on passe l'id en paramètre (vaut 2 dans grille et est empilée)
@@ -181,26 +196,30 @@ int connexe()
 
 void genLaby(int k)
 {
-    int duree = 5000;
+    int duree = 5000000;
     int flag = 0;
     int i = 0;
     int id = -1;
-    double tolerance = 0.1;
+    double marge = 0.1; // marge d'erreur que l'on s'autorise
 
     while((i < duree) && (flag == 0))
     {
-        
-        id = getRandBlanche();
+        int id = getRandBlanche();
         Grille[id] = 1;
         if(connexe() == 0)
             Grille[id] = 0;
-        if((getBlanches() >= ((1-(tolerance/2))*k) && (getBlanches() <= ((1-(tolerance/2))
-    *k))))
+        if((getBlanches() >= ((1-marge/2)*k) && (getBlanches() <= ((1+marge/2))*k)))
             {
                 flag = 1;
             }
         
         i++;
+    }
+    printf("Nombre d'operations = %d\n",i);
+    if(i>=duree)
+    {
+        printf("NOMBRE D'OPERATIONS DEPASSE! SORTIE DU PROGRAMME");
+        exit(0);
     }
 }
 
@@ -241,15 +260,18 @@ int main()
     Grille = (char*)calloc(NB_LIGNES*NB_COLONNES,sizeof(char));
     Pile = (char*)calloc(NB_LIGNES*NB_COLONNES,sizeof(char));
 
-    int taille = 60;
+    int taille = 80;
 
     srand((unsigned)time(NULL));
-    genLaby(60);
+    genLaby(taille);
     affiche();
+
+    printf("Cases blanches : %d  |  k = %d\nConnexite : %d",getBlanches(),taille,connexe());
 
     free(Grille);
     free(Pile);
     
+
     
     return 0;
 }
