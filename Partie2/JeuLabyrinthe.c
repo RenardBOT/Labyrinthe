@@ -7,16 +7,16 @@ gcc -Wall JeuLabyrinthe.c -o JeuLabyrinthe.exe
 #include <stdlib.h>
 #include <time.h>
 
-#define NB_COLONNES 25 // Nombre de COLONNES du tableau
-#define NB_LIGNES 25 // Nombre de LIGNES du tableau
+int NB_COLONNES = 11; // Nombre de COLONNES du tableau
+int NB_LIGNES = 10; // Nombre de LIGNES du tableau
 
-#define AFF_VIDE ' '  //Caractère représentant les cases vides pour l’affichage
-#define AFF_MUR  'x'  //Caractère représentant les murs pour l’affichage
-#define AFF_BORD ' '  //Caractère représentant les bords pour l’affichage
+char AFF_VIDE = '-';  //Caractère représentant les cases vides pour l’affichage
+char AFF_MUR = 'X';  //Caractère représentant les murs pour l’affichage
+char AFF_BORD = ' ';  //Caractère représentant les bords pour l’affichage
 
-char Grille[NB_COLONNES * NB_LIGNES] = {0};  // Tableau global contenant les caractères servant à afficher le labyrinthe
+char* Grille=NULL;  // Tableau global contenant les caractères servant à afficher le labyrinthe
 
-int Pile[NB_COLONNES*NB_LIGNES] = {0};
+char* Pile = NULL;
 int Sommet = -1;
 
 // # GESTION DE LA PILE
@@ -194,7 +194,7 @@ void genLaby(int k)
         Grille[id] = 1;
         if(connexe() == 0)
             Grille[id] = 0;
-        if((getBlanches() >= ((1-tolerance)*k) && (getBlanches() <= ((1-tolerance)
+        if((getBlanches() >= ((1-(tolerance/2))*k) && (getBlanches() <= ((1-(tolerance/2))
     *k))))
             {
                 flag = 1;
@@ -238,10 +238,17 @@ void affiche()
 
 int main()
 {
-    srand((unsigned) time(NULL));
-    genLaby(330);
+    Grille = (char*)calloc(NB_LIGNES*NB_COLONNES,sizeof(char));
+    Pile = (char*)calloc(NB_LIGNES*NB_COLONNES,sizeof(char));
+
+    int taille = 60;
+
+    srand((unsigned)time(NULL));
+    genLaby(60);
     affiche();
-    printf("Connexite : 1 - Le labyrinthe est bien CONNEXE",connexe());
+
+    free(Grille);
+    free(Pile);
     
     
     return 0;
