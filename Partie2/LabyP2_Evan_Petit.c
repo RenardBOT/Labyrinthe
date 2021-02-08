@@ -8,8 +8,8 @@ gcc -Wall JeuLabyrinthe.c -o JeuLabyrinthe.exe
 #include <time.h>
 #include <unistd.h>
 
-int NB_COLONNES = 7; // Nombre de COLONNES du tableau
-int NB_LIGNES = 7; // Nombre de LIGNES du tableau
+int NB_COLONNES = 25; // Nombre de COLONNES du tableau
+int NB_LIGNES = 25; // Nombre de LIGNES du tableau
 
 char AFF_VIDE = '-';  //Caractère représentant les cases vides pour l’affichage
 char AFF_MUR = 'X';  //Caractère représentant les murs pour l’affichage
@@ -268,13 +268,13 @@ int main()
     Grille = (char*)calloc(NB_LIGNES*NB_COLONNES,sizeof(char));
     Pile = (int*)calloc(NB_LIGNES*NB_COLONNES,sizeof(int));
 
-    int taille = 30;
+    int taille = 350;
 
     srand((unsigned)time(NULL));
     genLaby(taille);
     affiche();
 
-    printf("Cases blanches : %d  |  k = %d\nConnexite (1 oui | 0 non) : %d",getBlanches(),taille,connexe());
+    printf("Cases blanches : %d  |  lambda = %d\nConnexite (1 oui | 0 non) : %d",getBlanches(),taille,connexe());
 
     free(Grille);
     free(Pile);
