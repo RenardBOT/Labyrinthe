@@ -1,6 +1,9 @@
 /*
 LA COMMANDE POUR COMPILER EST :
-gcc -Wall JeuLabyrinthe.c -o JeuLabyrinthe.exe
+gcc -Wall LabyP2_Evan_Petit.c -o Labyrinthe.exe
+
+LA COMMANDE POUR LANCER LE PROGRAMME EST
+./Labyrinthe
 */
 
 #include <stdio.h>
@@ -8,8 +11,8 @@ gcc -Wall JeuLabyrinthe.c -o JeuLabyrinthe.exe
 #include <time.h>
 #include <unistd.h>
 
-int NB_COLONNES = 25; // Nombre de COLONNES du tableau
-int NB_LIGNES = 25; // Nombre de LIGNES du tableau
+int NB_COLONNES = 15; // Nombre de COLONNES du tableau
+int NB_LIGNES = 15; // Nombre de LIGNES du tableau
 
 char AFF_VIDE = '-';  //Caractère représentant les cases vides pour l’affichage
 char AFF_MUR = 'X';  //Caractère représentant les murs pour l’affichage
@@ -119,22 +122,6 @@ int getRandBlanche()
         }
     
     return id;
-
-    /*int j = 0;
-    int taille = getBlanches();
-    int blanches[taille] ;
-    for(int i = 0 ; i<(NB_COLONNES*NB_LIGNES) ; i++)
-    {
-        if (Grille[i] == 0)
-        {
-            blanches[j] = i;
-            j++;
-        }   
-        
-    }
-
-    int id = (rand() % ((taille-2)+1));
-    return blanches[id];*/
 }
 
 // Marque une case dont on passe l'id en paramètre (vaut 2 dans grille et est empilée)
@@ -207,13 +194,12 @@ void genLaby(int k)
     int duree = 1000000;
     int flag = 0;
     int i = 0;
-    int id = -1;
     double marge = 0.1; // marge d'erreur que l'on s'autorise
 
     while((i < duree) && (flag == 0))
     {
         int id = getRandBlanche();
-        Grille[id] = 1;
+        Grille[id   ] = 1;
         if(connexe() == 0)
             Grille[id] = 0;
         if((getBlanches() >= ((1-marge/2)*k) && (getBlanches() <= ((1+marge/2))*k)))
@@ -268,13 +254,13 @@ int main()
     Grille = (char*)calloc(NB_LIGNES*NB_COLONNES,sizeof(char));
     Pile = (int*)calloc(NB_LIGNES*NB_COLONNES,sizeof(int));
 
-    int taille = 350;
+    int taille = 80;
 
     srand((unsigned)time(NULL));
     genLaby(taille);
     affiche();
 
-    printf("Cases blanches : %d  |  lambda = %d\nConnexite (1 oui | 0 non) : %d",getBlanches(),taille,connexe());
+    printf("Cases blanches : %d  |  Nombre de cases souhaite = %d\nConnexite (1 oui | 0 non) : %d",getBlanches(),taille,connexe());
 
     free(Grille);
     free(Pile);

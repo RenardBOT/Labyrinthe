@@ -6,8 +6,8 @@ gcc -Wall LabyP1_Evan_Petit.c -o LabyP1.exe
 #include <stdio.h>
 #include <stdlib.h>
 
-int NB_COLONNES = 11; // Nombre de COLONNES du tableau
-int NB_LIGNES = 10; // Nombre de LIGNES du tableau
+int NB_COLONNES = 6; // Nombre de COLONNES du tableau
+int NB_LIGNES = 4; // Nombre de LIGNES du tableau
 
 char AFF_VIDE = '-';  //Caractère représentant les cases vides pour l’affichage
 char AFF_MUR = 'X';  //Caractère représentant les murs pour l’affichage
