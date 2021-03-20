@@ -1,6 +1,7 @@
 #include <stack>
 #include <vector>
 #include <Windows.h>
+#include <queue>
 
 #include "Labyrinthe.h"
 
@@ -232,7 +233,7 @@ void Labyrinthe::genLaby(int nb)
             }
         i++;
     }
-    printf("Nombre d'operations = %d\n",i);
+    printf("Amount of operations = %d\n",i);
 
     if(i>=duree)
     {
@@ -243,63 +244,60 @@ void Labyrinthe::genLaby(int nb)
 
 int Labyrinthe::distMin(int id1, int id2)
 {
-    stack <int> pile;
-    pile.push(id1);
-    int i = 2;
-    int id = -1;
-    int res = 0;
+    queue<int> file;
+    int res = 1;
+    int id; 
+    boolean flag = false;
+    vector<int> compte;
+    compte.resize(this->getTaille());
 
-    this->modifie(id1,i);
-    
-
-    if((!(lit(id1) == 1)) && lit(id2) == 1)
-        return res;
-    
-    while(!(pile.empty()) && lit(id2) == 0)
+    if( (lit(id1) == 1) || (lit(id2) == 1) )
+        res = -1;
+    else
     {
-        i++; 
-        id = pile.top();
-        pile.pop();
-        int idCol = getCol(id);
-        int idLig = getLigne(id);
+        file.push(id1);
+        compte[id1] = res;
 
-        if((idLig > 0) && (lit(idLig - 1 , idCol) == 0)) // Haut
+        while(!(file.empty()) && (flag == false))
         {
-            this->modifie(idLig-1,idCol,i);
-            pile.push(getID(idLig-1,idCol));
+            id = file.front();
+            file.pop();
+
+            if(id == id2)
+            {
+                res = compte[id];
+                flag = true;
+            }
+
+            int idCol = getCol(id);
+            int idLig = getLigne(id);
+
+            if((idLig > 0) && (lit(idLig - 1 , idCol) == 0) && ( compte[getID(idLig-1,idCol)] == 0 ) ) // Haut
+            {
+                file.push(getID(idLig-1,idCol));
+                compte[getID(idLig-1,idCol)] = compte[id]+1;
+            }
+
+            if((idLig < this->lig - 1) && (lit(idLig + 1 , idCol) == 0) && ( compte[getID(idLig+1,idCol)] == 0 )) // Bas
+            {
+                file.push(getID(idLig+1,idCol));
+                compte[getID(idLig+1,idCol)] = compte[id]+1;
+            }
+
+            if((idCol > 0) && (lit(idLig , idCol - 1) == 0) && ( compte[getID(idLig,idCol-1)] == 0 )) // Gauche
+            {
+                file.push(getID(idLig,idCol-1));
+                compte[getID(idLig,idCol-1)] = compte[id]+1;
+            }
+
+            if((idCol < this->col - 1) && (lit(idLig , idCol + 1) == 0) && ( compte[getID(idLig,idCol+1)] == 0 )) // Droite
+            {
+                file.push(getID(idLig,idCol+1));
+                compte[getID(idLig,idCol+1)] = compte[id]+1;
+            }
+
         }
-
-        if((idLig < this->lig - 1) && (lit(idLig + 1 , idCol) == 0)) // Bas
-        {
-            this->modifie(idLig+1,idCol,i);
-            pile.push(getID(idLig+1,idCol));
-        }
-
-        if((idCol > 0) && (lit(idLig , idCol - 1) == 0)) // Gauche
-        {
-            this->modifie(idLig,idCol-1,i);
-            pile.push(getID(idLig,idCol-1));
-        }
-
-        if((idCol < this->col - 1) && (lit(idLig , idCol + 1) == 0)) // Droite
-        {
-            this->modifie(idLig,idCol+1,i);
-            pile.push(getID(idLig,idCol+1));
-        }
-
-        /*Sleep(1000);
-        system("cls");
-        this->affiche();*/
-
     }
-
-    res = lit(id2)-1;
-
-    /*for(int i = 0 ; i < getTaille() ; i++)
-    {
-        if(lit(i) >= 2)
-            modifie(i,0);
-    }*/
 
     return res;
 
