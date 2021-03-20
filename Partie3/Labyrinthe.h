@@ -68,4 +68,8 @@ public:
     static void demo();
 };
 
+<<<<<<< HEAD
 #endif /* Labyrinthe_hpp */
+=======
+#endif /* Labyrinthe_hpp */
+>>>>>>> cb41abf2fa83a62d79cec4948448f9476ac22f17

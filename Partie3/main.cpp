@@ -8,7 +8,11 @@
 
 using namespace std;
 
+<<<<<<< HEAD
 // Attend que duree (en secondes) se soit écoulée depuis le dernier appel.
+=======
+//Attend que duree (en secondes) se soit écoulée depuis le dernier appel.
+>>>>>>> cb41abf2fa83a62d79cec4948448f9476ac22f17
 void synchro(double duree)
 {
     static clock_t jalon = clock();
