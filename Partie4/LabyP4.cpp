@@ -13,14 +13,19 @@ using namespace std;
 int main()
 {
     srand((unsigned)time(NULL));
-    Labyrinthe* lab = new Labyrinthe(10,10);
-    lab->genLaby(50);
+    int h = 100;
+    int l = 100;
+    Labyrinthe* lab = new Labyrinthe(h,l);
+    int k = (h*l)/2;
+    lab->genLaby(k);
 
     lab->affiche();
 
     int ok = lab->distMin(lab->getTaille()-1,0);
 
-    cout << "\nDistance entre depart et arrivee : " << ok << endl;
+    int b = lab->getBlanches();
+
+    cout << "Asked for k = "<< k << " dots | got k = "<< b << " | delta = " << -(k-b) << "(x" << (double)k/b << ")" << "\n Shortest path length : " << ok << endl;
     
     
     

@@ -11,8 +11,8 @@ LA COMMANDE POUR LANCER LE PROGRAMME EST
 #include <time.h>
 #include <unistd.h>
 
-int NB_COLONNES = 15; // Nombre de COLONNES du tableau
-int NB_LIGNES = 15; // Nombre de LIGNES du tableau
+int NB_COLONNES = 40; // Nombre de COLONNES du tableau
+int NB_LIGNES = 9; // Nombre de LIGNES du tableau
 
 char AFF_VIDE = '-';  //Caractère représentant les cases vides pour l’affichage
 char AFF_MUR = 'X';  //Caractère représentant les murs pour l’affichage
@@ -199,7 +199,7 @@ void genLaby(int k)
     while((i < duree) && (flag == 0))
     {
         int id = getRandBlanche();
-        Grille[id   ] = 1;
+        Grille[id] = 1;
         if(connexe() == 0)
             Grille[id] = 0;
         if((getBlanches() >= ((1-marge/2)*k) && (getBlanches() <= ((1+marge/2))*k)))
@@ -254,7 +254,7 @@ int main()
     Grille = (char*)calloc(NB_LIGNES*NB_COLONNES,sizeof(char));
     Pile = (int*)calloc(NB_LIGNES*NB_COLONNES,sizeof(int));
 
-    int taille = 80;
+    int taille = 200;
 
     srand((unsigned)time(NULL));
     genLaby(taille);
