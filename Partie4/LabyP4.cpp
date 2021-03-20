@@ -12,9 +12,9 @@ using namespace std;
 
 int main()
 {
-    srand((unsigned)time(NULL));
-    int h = 100;
-    int l = 100;
+    srand((unsigned)time(NULL)); // random seed 
+    int h = 100; // hauteur du labyrinthe
+    int l = 100; // 
     Labyrinthe* lab = new Labyrinthe(h,l);
     int k = (h*l)/2;
     lab->genLaby(k);
