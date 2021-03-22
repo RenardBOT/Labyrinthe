@@ -237,27 +237,13 @@ vector<int> Laby::voisins(int id, bool diag)
 bool Laby::deplaceRobotA(int algo)
 {   
     bool contact = true;
-    if(algo == 2)
-    {
-        vector<int> voisinsA = voisins(idRobotA, false); // Vecteur contenant toutes les cases voisines au robot A
-        int res = voisinsA.at(0); // Variable contenant l'id de la case voisine au robot A réduisant le plus la distance entre robot A et robot B
-        int dMin = distMin(voisinsA.at(0),idRobotB); // Variable contenant la distance min entre la case voisine au robot A qu'on analyse et case robot B
-        
-        for(int i = 1 ; i<voisinsA.size() ; i++)
-        {
-            if(distMin(voisinsA.at(i),idRobotB) < dMin)
-                res = voisinsA.at(i);
-        }
 
-        idRobotA = res;
-    }
-
+    // DIRECT PREDATEUR
     if(algo == 1)
     {
         vector<int> voisinsA = voisins(idRobotA, false); // Vecteur contenant toutes les cases voisines au robot A
         vector<int> choix;
         choix.push_back(voisinsA.at(0));
-        //int res = voisinsA.at(0); // Variable contenant l'id de la case voisine au robot A réduisant le plus la distance entre robot A et robot B
         int dMin = distMin(voisinsA.at(0),idRobotB); // Variable contenant la distance min entre la case voisine au robot A qu'on analyse et case robot B
         
         for(int i = 1 ; i<voisinsA.size() ; i++)
@@ -275,8 +261,6 @@ bool Laby::deplaceRobotA(int algo)
         }
 
         idRobotA = choix.at((int)rand()%choix.size());
-
-        //idRobotA = res;
     }
 
     vector<int> voisinsA = voisins(idRobotA,true);
@@ -287,27 +271,19 @@ bool Laby::deplaceRobotA(int algo)
 
 bool Laby::deplaceRobotB(int algo)
 {
-    if(algo == 2)
+    // PROIE RANDOM
+    if(algo == 1)
     {
         vector<int> voisinsB = voisins(idRobotB,false); // Vecteur contenant toutes les cases voisines au robot B
-        int res = voisinsB.at(0); // Variable contenant l'id de la case voisine au robot A maximisant le plus la distance entre robot B et robot A
-        int dMax = distMin(voisinsB.at(0),idRobotA); // Variable contenant la distance max entre la case voisine au robot B qu'on analyse et case robot A
-        
-        for(int i = 1 ; i<voisinsB.size() ; i++)
-        {
-            if(distMin(voisinsB.at(i),idRobotA) > dMax)
-                res = voisinsB.at(i);
-        }
-
-        idRobotB = res;
+        idRobotB = voisinsB.at((int)rand()%voisinsB.size()); // Le robot se déplace sur une case voisine aléatoire.
     }
 
-    if(algo == 1)
+    // PROIE FUYANTE
+    if(algo == 2)
     {
         vector<int> voisinsB = voisins(idRobotB, false); // Vecteur contenant toutes les cases voisines au robot A
         vector<int> choix;
         choix.push_back(voisinsB.at(0));
-        //int res = voisinsA.at(0); // Variable contenant l'id de la case voisine au robot A réduisant le plus la distance entre robot A et robot B
         int dMax = distMin(voisinsB.at(0),idRobotA); // Variable contenant la distance min entre la case voisine au robot A qu'on analyse et case robot B
         
         for(int i = 1 ; i<voisinsB.size() ; i++)
@@ -326,7 +302,7 @@ bool Laby::deplaceRobotB(int algo)
 
         idRobotB = choix.at((int)rand()%choix.size());
 
-        //idRobotA = res;
+        //idRobotA = res;   
     }
     return 1;
 }
@@ -460,7 +436,7 @@ void testEval()
 {
     Laby laby(descripteur2);
 
-    int score = laby.evalue(100, 100, 1, 2);
+    int score = laby.evalue(100, 300, 1, 2);
  
     cout << "Mediane : " << score << endl;
 }
@@ -469,10 +445,8 @@ int main(int argc, const char * argv[])
 {
     srand((unsigned)time(NULL));
 
-    Laby* lab = new Laby(descripteur1);
-    //lab->course(500,false,true,2,1);
-    testPoursuite();
-    //testEval();
+    Laby* lab1 = new Laby(descripteur1);
+    testEval();
 
     return 0;
 }
