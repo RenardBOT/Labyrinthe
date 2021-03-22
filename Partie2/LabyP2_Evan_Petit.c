@@ -11,8 +11,8 @@ LA COMMANDE POUR LANCER LE PROGRAMME EST
 #include <time.h>
 #include <unistd.h>
 
-int NB_COLONNES = 40; // Nombre de COLONNES du tableau
-int NB_LIGNES = 9; // Nombre de LIGNES du tableau
+int NB_COLONNES = 150; // Nombre de COLONNES du tableau
+int NB_LIGNES = 50; // Nombre de LIGNES du tableau
 
 char AFF_VIDE = '-';  //Caractère représentant les cases vides pour l’affichage
 char AFF_MUR = 'X';  //Caractère représentant les murs pour l’affichage
@@ -189,11 +189,12 @@ int connexe()
 }
 
 
-void genLaby(int k)
+void genLaby(double densite)
 {
     int duree = 1000000;
     int flag = 0;
     int i = 0;
+    int nbCases = getTaille()*densite;
     double marge = 0.1; // marge d'erreur que l'on s'autorise
 
     while((i < duree) && (flag == 0))
@@ -202,18 +203,15 @@ void genLaby(int k)
         Grille[id] = 1;
         if(connexe() == 0)
             Grille[id] = 0;
-        if((getBlanches() >= ((1-marge/2)*k) && (getBlanches() <= ((1+marge/2))*k)))
+        if((getBlanches() >= ((1-marge/2)*nbCases) && (getBlanches() <= ((1+marge/2))*nbCases)))
             {
                 flag = 1;
             }
         i++;
     }
-    printf("Nombre d'operations = %d\n",i);
-    if(i>=duree)
-    {
-        printf("NOMBRE D'OPERATIONS DEPASSE! SORTIE DU PROGRAMME");
-        exit(0);
-    }
+
+    if(i>= duree)
+        printf("Duree d'execution depassee! (%d)",duree);
 }
 
 //affiche la grille
@@ -254,13 +252,14 @@ int main()
     Grille = (char*)calloc(NB_LIGNES*NB_COLONNES,sizeof(char));
     Pile = (int*)calloc(NB_LIGNES*NB_COLONNES,sizeof(int));
 
-    int taille = 200;
+    double dens = 0.5;
+    int blanches = dens*getTaille();
 
     srand((unsigned)time(NULL));
-    genLaby(taille);
+    genLaby(dens);
     affiche();
 
-    printf("Cases blanches : %d  |  Nombre de cases souhaite = %d\nConnexite (1 oui | 0 non) : %d",getBlanches(),taille,connexe());
+    printf("Cases blanches : %d  |  Nombre de cases souhaite = %d\nConnexite (1 oui | 0 non) : %d",getBlanches(),blanches,connexe());
 
     free(Grille);
     free(Pile);
