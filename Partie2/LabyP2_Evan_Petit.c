@@ -11,12 +11,12 @@ LA COMMANDE POUR LANCER LE PROGRAMME EST
 #include <time.h>
 #include <unistd.h>
 
-int NB_COLONNES = 150; // Nombre de COLONNES du tableau
-int NB_LIGNES = 50; // Nombre de LIGNES du tableau
+int NB_COLONNES = 20; // Nombre de COLONNES du tableau
+int NB_LIGNES = 40; // Nombre de LIGNES du tableau
 
 char AFF_VIDE = '-';  //Caractère représentant les cases vides pour l’affichage
 char AFF_MUR = 'X';  //Caractère représentant les murs pour l’affichage
-char AFF_BORD = ' ';  //Caractère représentant les bords pour l’affichage
+char AFF_BORD = 'X';  //Caractère représentant les bords pour l’affichage
 
 char* Grille=NULL;  // Tableau global contenant les caractères servant à afficher le labyrinthe
 
@@ -252,7 +252,7 @@ int main()
     Grille = (char*)calloc(NB_LIGNES*NB_COLONNES,sizeof(char));
     Pile = (int*)calloc(NB_LIGNES*NB_COLONNES,sizeof(int));
 
-    double dens = 0.5;
+    double dens = 0.25;
     int blanches = dens*getTaille();
 
     srand((unsigned)time(NULL));

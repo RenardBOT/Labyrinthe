@@ -1,4 +1,5 @@
 // Partie 3 du projet : poursuite de robots
+// Pour compiler : g++ Labyrinthe.o LabyP3_Evan_Petit.cpp
 
 #include <iostream>
 #include <algorithm>
@@ -445,8 +446,8 @@ int main(int argc, const char * argv[])
 {
     srand((unsigned)time(NULL));
 
-    Laby* lab1 = new Laby(descripteur1);
     testEval();
+    testPoursuite();
 
     return 0;
 }

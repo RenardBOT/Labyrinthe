@@ -1,4 +1,6 @@
 #include <vector>
+#include <string>
+using namespace std;
 
 class Labyrinthe
 {
@@ -26,5 +28,7 @@ class Labyrinthe
         void affiche();
         bool connexe();
         void genLaby(int nb);
+        void genLabyBack();
         int distMin(int id1, int id2);
+        vector<int> voisinsVides(int id);
 };

@@ -1,20 +1,79 @@
+/*
+NOM : EVAN PETIT
+
+LA COMMANDE POUR COMPILER EST :
+gcc -Wall Labyrinthe.cpp -o Labyrinthe.exe
+
+POUR EXECUTER ./labyrinthe
+
+Le sujet ne demandait pas de mettre en place des tests pour la partie 4B
+
+POUR TESTER LA CONTRIBUTION PERSONNELLE, COLLER DANS LE MAIN :
+int lignes = <valeur>
+int colonnes = <valeur>
+Labyrinthe* lab = new Labyrinthe(lignes, colonnes);
+lab->genLabyBack();
+lab->affiche();
+*/
+
 #include <stack>
 #include <vector>
 #include <Windows.h>
 #include <queue>
+#include <iostream>
+#include <ctime>
+using namespace std;
 
-#include "Labyrinthe.h"
+class Labyrinthe
+{
+    private:
+        vector<char> grille;
+        int lig;
+        int col;
+
+    public:
+        Labyrinthe(int nLignes, int nColonnes);
+        Labyrinthe(char data[]);
+        ~Labyrinthe();
+        int getLongueur();
+        int getLargeur();
+        int getTaille();
+        int getID(int ligne, int colonne);
+        int getLigne(int id);
+        int getCol(int id);
+        void modifie(int ligne, int colonne, char x);
+        void modifie(int id, char x);
+        char lit(int ligne, int colonne);
+        char lit(int id);
+        int getBlanches();
+        int getRandBlanche();
+        void affiche();
+        bool connexe();
+        void genLaby(int nb);
+        void genLabyBack();
+        int distMin(int id1, int id2);
+        vector<int> voisinsVides(int id);
+};
 
 Labyrinthe::Labyrinthe(int nLignes, int nColonnes)
 {
     this->lig = nLignes;
     this->col = nColonnes;
-    this->grille.resize(lig*col,0);
+    this->grille.resize(lig * col, 0);
 }
 
 Labyrinthe::Labyrinthe(char data[])
 {
-
+    this->lig = (int)data[0];
+    this->col = (int)data[1];
+    cout << "Lignes : " << this->lig << endl
+         << "Colonnes : " << this->col << endl;
+    int length = this->lig * this->col;
+    this->grille.resize(length);
+    for (int i = 0; i < length; i++)
+    {
+        this->grille[i] = (int)data[i + 2];
+    }
 }
 
 Labyrinthe::~Labyrinthe()
@@ -34,27 +93,27 @@ int Labyrinthe::getLargeur()
 
 int Labyrinthe::getTaille()
 {
-    return this->col*this->lig;
+    return this->col * this->lig;
 }
 
 int Labyrinthe::getID(int ligne, int colonne)
 {
-    return this->col*ligne+colonne;
+    return this->col * ligne + colonne;
 }
 
 int Labyrinthe::getLigne(int id)
 {
-    return id/this->col;
+    return id / this->col;
 }
 
 int Labyrinthe::getCol(int id)
 {
-    return id%this->col;
+    return id % this->col;
 }
 
 void Labyrinthe::modifie(int ligne, int colonne, char x)
 {
-    this->grille[getID(ligne,colonne)] = x;
+    this->grille[getID(ligne, colonne)] = x;
 }
 
 void Labyrinthe::modifie(int id, char x)
@@ -64,7 +123,7 @@ void Labyrinthe::modifie(int id, char x)
 
 char Labyrinthe::lit(int ligne, int colonne)
 {
-    return this->grille[getID(ligne,colonne)];
+    return this->grille[getID(ligne, colonne)];
 }
 
 char Labyrinthe::lit(int id)
@@ -76,11 +135,11 @@ int Labyrinthe::getBlanches()
 {
     // Compte le nombre de cases blanches dans la grille
     int blanches = 0;
-    for(int i = 0 ; i < this->lig ; i++)
+    for (int i = 0; i < this->lig; i++)
     {
-        for(int j = 0 ; j < this->col ; j++)
+        for (int j = 0; j < this->col; j++)
         {
-            if (lit(i,j) == 0)
+            if (lit(i, j) == 0)
             {
                 blanches++;
             }
@@ -94,13 +153,14 @@ int Labyrinthe::getRandBlanche()
     int flag = 0;
     int id = -1;
     int duree = 0;
-    while(flag == 0 && duree < 1000000)
-        {
-            id = (rand() % ((this->col * this->lig)-2)+1);
-            if(this->lit(id) == 0) flag = 1;
-            duree++;
-        }
-    
+    while (flag == 0 && duree < 1000000)
+    {
+        id = (rand() % ((this->col * this->lig) - 2) + 1);
+        if (this->lit(id) == 0)
+            flag = 1;
+        duree++;
+    }
+
     return id;
 }
 
@@ -108,33 +168,42 @@ void Labyrinthe::affiche()
 {
     string res = "";
     char vide = '.';
-    char mur = 'X'; 
-    char bord = 'O';
+    char mur = 'X';
+    char bord = 'X';
+    char marque = '@';
 
     // Affichage caractère par caractère en bouclant sur le tableau
-    for(int i = -1 ; i <= lig ; i++)
+    for (int i = -1; i <= lig; i++)
     {
-        for(int j = -1 ; j <= col ; j++)
+        for (int j = -1; j <= col; j++)
         {
-            if((i == -1) | (j == -1) | (i == lig) | (j == col))
-                res = res+bord;
+            if ((i == -1) | (j == -1) | (i == lig) | (j == col))
+                res = res + bord;
 
             else
             {
-                if(lit(i,j) == 0) 
-                    res=res+vide;
+                if (lit(i, j) == 0)
+                    res = res + vide;
 
-                if(lit(i,j) == 1)
-                    res=res+mur;
+                if (lit(i, j) == 1)
+                    res = res + mur;
 
-                if(lit(i,j) > 1)
-                    res=res+to_string((int)lit(i,j)-2).back();
+                if (lit(i, j) == 2)
+                    res = res + marque;
+
+                if (lit(i, j) == 3)
+                    res = res + 'A';
+
+                if (lit(i, j) == 4)
+                    res = res + 'B';
             }
         }
-        res = res+'\n';
+        res = res + '\n';
     }
-    res[this->col+3]=' ';
-    res[res.size()-(this->col+5)]=' ';
+    
+    //res[this->col + 3] = vide;
+    //res[res.size() - (this->col + 5)] = vide;
+    
     cout << res << endl;
 }
 
@@ -142,75 +211,74 @@ bool Labyrinthe::connexe()
 {
     // ## DEBUT SEQUENCE
     int id = 0;
-    stack <int> pile;
+    stack<int> pile;
 
-    if(getBlanches() == 0) 
-        printf("ATTENTION - IL N'Y A AUCUNE CASE BLANCHE!"); 
+    if (getBlanches() == 0)
+        printf("ATTENTION - IL N'Y A AUCUNE CASE BLANCHE!");
     else
     {
         int flag = 0;
-        while((id < this->lig*this->col) && (flag == 0))
+        while ((id < this->lig * this->col) && (flag == 0))
         {
-            if(this->lit(id) == 0)
+            if (this->lit(id) == 0)
             {
                 flag = 1;
             }
-            else id++;
+            else
+                id++;
         }
-        this->modifie(id,2);
+        this->modifie(id, 2);
         pile.push(id);
     }
 
-
-    while(!(pile.empty()))
-    {   
+    while (!(pile.empty()))
+    {
         id = pile.top();
         pile.pop();
         int idCol = getCol(id);
         int idLig = getLigne(id);
-        
-        if((idLig > 0) && (lit(idLig - 1 , idCol) == 0)) // Haut
+
+        if ((idLig > 0) && (lit(idLig - 1, idCol) == 0)) // Haut
         {
-            this->modifie(idLig-1,idCol,2);
-            pile.push(getID(idLig-1,idCol));
+            this->modifie(idLig - 1, idCol, 2);
+            pile.push(getID(idLig - 1, idCol));
         }
 
-        if((idLig < this->lig - 1) && (lit(idLig + 1 , idCol) == 0)) // Bas
+        if ((idLig < this->lig - 1) && (lit(idLig + 1, idCol) == 0)) // Bas
         {
-            this->modifie(idLig+1,idCol,2);
-            pile.push(getID(idLig+1,idCol));
+            this->modifie(idLig + 1, idCol, 2);
+            pile.push(getID(idLig + 1, idCol));
         }
 
-        if((idCol > 0) && (lit(idLig , idCol - 1) == 0)) // Gauche
+        if ((idCol > 0) && (lit(idLig, idCol - 1) == 0)) // Gauche
         {
-            this->modifie(idLig,idCol-1,2);
-            pile.push(getID(idLig,idCol-1));
+            this->modifie(idLig, idCol - 1, 2);
+            pile.push(getID(idLig, idCol - 1));
         }
 
-        if((idCol < this->col - 1) && (lit(idLig , idCol + 1) == 0)) // Droite
+        if ((idCol < this->col - 1) && (lit(idLig, idCol + 1) == 0)) // Droite
         {
-            this->modifie(idLig,idCol+1,2);
-            pile.push(getID(idLig,idCol+1));
+            this->modifie(idLig, idCol + 1, 2);
+            pile.push(getID(idLig, idCol + 1));
         }
     }
 
-    int marques = 0 ;
-    for(int i = 0 ; i < this->getTaille(); i++)
+    int marques = 0;
+    for (int i = 0; i < this->getTaille(); i++)
     {
-        if(lit(i) == 2)
+        if (lit(i) == 2)
         {
-            modifie(i,0);
+            modifie(i, 0);
             marques++;
         }
     }
 
-    
     // Drapeau. 0 si non connexe, 1 si connexe, 2 si erreur (plus de marquées que de blanches).
     bool flag = false;
-    if(marques == getBlanches()) flag = true;
+    if (marques == getBlanches())
+        flag = true;
 
     return flag;
-    
 }
 
 void Labyrinthe::genLaby(int nb)
@@ -219,51 +287,135 @@ void Labyrinthe::genLaby(int nb)
     int flag = 0;
     int i = 0;
     double marge = 0.1; // marge d'erreur que l'on s'autorise
-    int k = nb; // taille souhaitée
+    int k = nb;         // taille souhaitée
 
-    while((i < duree) && (flag == 0))
+    while ((i < duree) && (flag == 0))
     {
         int id = getRandBlanche();
-        this->modifie(id,1);
-        if(connexe() == 0)
-            this->modifie(id,0);
-        if((getBlanches() >= ((1-marge/2)*k) && (getBlanches() <= ((1+marge/2))*k)))
-            {
-                flag = 1;
-            }
+        this->modifie(id, 1);
+        if (connexe() == 0)
+            this->modifie(id, 0);
+        if ((getBlanches() >= ((1 - marge / 2) * k) && (getBlanches() <= ((1 + marge / 2)) * k)))
+        {
+            flag = 1;
+        }
         i++;
     }
-    printf("Amount of operations = %d\n",i);
+    printf("Amount of operations = %d\n", i);
 
-    if(i>=duree)
+    if (i >= duree)
     {
         printf("NOMBRE D'OPERATIONS DEPASSE! SORTIE DU PROGRAMME");
         exit(0);
     }
 }
 
+void Labyrinthe::genLabyBack()
+{
+    // On resize le labyrinthe on le remplit d'un quadrillage de murs (longueur et largeur impaires)
+    this->lig = this->lig * 2 - 1;
+    this->col = this->col * 2 - 1;
+    int lig = this->lig;
+    int col = this->col;
+    this->grille.resize(lig*col);
+
+    for (int l = 0; l < lig; l++)
+        for (int c = 0; c < col; c++)
+            if (l % 2 == 0 && c % 2 == 0) modifie(getID(l, c), 0);
+            else modifie(getID(l, c), 1);
+    
+    // On ajoute la première case à la stack et on la marque
+    stack<int> pile;
+    pile.push(0);
+    modifie(0,2);
+
+    // Tant que la pile n'est pas vide
+    while(!pile.empty())
+    {
+        // On pop la pile pour traiter la cellule au sommet
+        int current = pile.top();
+        pile.pop();
+
+        // On vérifie si la case a des voisins non visités
+        vector<int> voisins = voisinsVides(current);
+        if(!voisins.empty())
+        {
+            // On push current à la pile pour la retraiter plus tard
+            pile.push(current);
+
+            // On prend un voisin aléatoirement
+            int next = voisins[rand()%voisins.size()];
+
+            // On retire le mur entre les deux
+            modifie( (getLigne(current)+getLigne(next))/2 , (getCol(current)+getCol(next))/2 , 0 );
+
+            // On marque la prochaine cell et on l'ajoute à la pile
+            modifie(next,2);
+            pile.push(next);
+        }
+    }
+
+    for (int l = 0; l < lig; l++)
+        for (int c = 0; c < col; c++)
+            if (lit(l,c) == 2) modifie(getID(l, c), 0);
+}
+
+// Méthode pour la génération backtracking
+vector<int> Labyrinthe::voisinsVides(int id){
+    vector<int> v = {};
+    int idLig = getLigne(id);
+    int idCol = getCol(id);
+
+
+    if ((idLig > 0) && (lit(idLig - 2, idCol) == 0)) // Haut
+    {
+        v.push_back(getID(idLig - 2, idCol));
+    }
+
+    if ((idLig < this->lig - 1) && (lit(idLig + 2, idCol) == 0)) // Bas
+    {
+        v.push_back(getID(idLig + 2, idCol));
+    }
+
+    if ((idCol > 0) && (lit(idLig, idCol - 2) == 0)) // Gauche
+    {
+        v.push_back(getID(idLig, idCol - 2));
+    }
+
+    if ((idCol < this->col - 1) && (lit(idLig, idCol + 2) == 0)) // Droite
+    {
+        v.push_back(getID(idLig, idCol + 2));
+    }
+
+    return v;
+
+}
+
+
+
+
 int Labyrinthe::distMin(int id1, int id2)
 {
     queue<int> file;
-    int res = 1;
-    int id; 
+    int res = 0;
+    int id;
     boolean flag = false;
     vector<int> compte;
     compte.resize(this->getTaille());
 
-    if( (lit(id1) == 1) || (lit(id2) == 1) )
+    if ((lit(id1) == 1) || (lit(id2) == 1))
         res = -1;
     else
     {
         file.push(id1);
         compte[id1] = res;
 
-        while(!(file.empty()) && (flag == false))
+        while (!(file.empty()) && (flag == false))
         {
             id = file.front();
             file.pop();
 
-            if(id == id2)
+            if (id == id2)
             {
                 res = compte[id];
                 flag = true;
@@ -272,33 +424,42 @@ int Labyrinthe::distMin(int id1, int id2)
             int idCol = getCol(id);
             int idLig = getLigne(id);
 
-            if((idLig > 0) && (lit(idLig - 1 , idCol) == 0) && ( compte[getID(idLig-1,idCol)] == 0 ) ) // Haut
+            if ((idLig > 0) && (lit(idLig - 1, idCol) == 0) && (compte[getID(idLig - 1, idCol)] == 0)) // Haut
             {
-                file.push(getID(idLig-1,idCol));
-                compte[getID(idLig-1,idCol)] = compte[id]+1;
+                file.push(getID(idLig - 1, idCol));
+                compte[getID(idLig - 1, idCol)] = compte[id] + 1;
             }
 
-            if((idLig < this->lig - 1) && (lit(idLig + 1 , idCol) == 0) && ( compte[getID(idLig+1,idCol)] == 0 )) // Bas
+            if ((idCol < this->col - 1) && (lit(idLig, idCol + 1) == 0) && (compte[getID(idLig, idCol + 1)] == 0)) // Droite
             {
-                file.push(getID(idLig+1,idCol));
-                compte[getID(idLig+1,idCol)] = compte[id]+1;
+                file.push(getID(idLig, idCol + 1));
+                compte[getID(idLig, idCol + 1)] = compte[id] + 1;
             }
 
-            if((idCol > 0) && (lit(idLig , idCol - 1) == 0) && ( compte[getID(idLig,idCol-1)] == 0 )) // Gauche
+            if ((idLig < this->lig - 1) && (lit(idLig + 1, idCol) == 0) && (compte[getID(idLig + 1, idCol)] == 0)) // Bas
             {
-                file.push(getID(idLig,idCol-1));
-                compte[getID(idLig,idCol-1)] = compte[id]+1;
+                file.push(getID(idLig + 1, idCol));
+                compte[getID(idLig + 1, idCol)] = compte[id] + 1;
             }
 
-            if((idCol < this->col - 1) && (lit(idLig , idCol + 1) == 0) && ( compte[getID(idLig,idCol+1)] == 0 )) // Droite
+            if ((idCol > 0) && (lit(idLig, idCol - 1) == 0) && (compte[getID(idLig, idCol - 1)] == 0)) // Gauche
             {
-                file.push(getID(idLig,idCol+1));
-                compte[getID(idLig,idCol+1)] = compte[id]+1;
+                file.push(getID(idLig, idCol - 1));
+                compte[getID(idLig, idCol - 1)] = compte[id] + 1;
             }
 
+            
         }
     }
-
     return res;
+}
 
+int main(int argc, const char * argv[])
+{
+    srand((unsigned)time(NULL));
+    Labyrinthe* lab2 = new Labyrinthe(20,40);
+    lab2->genLabyBack();
+    lab2->affiche();
+
+    return 0;
 }
