@@ -362,7 +362,7 @@ void Labyrinthe::genLabyBack()
 
 // Méthode pour la génération backtracking
 vector<int> Labyrinthe::voisinsVides(int id){
-    vector<int> v = {};
+    vector<int> v;
     int idLig = getLigne(id);
     int idCol = getCol(id);
 
@@ -399,7 +399,7 @@ int Labyrinthe::distMin(int id1, int id2)
     queue<int> file;
     int res = 0;
     int id;
-    boolean flag = false;
+    bool flag = false;
     vector<int> compte;
     compte.resize(this->getTaille());
 
