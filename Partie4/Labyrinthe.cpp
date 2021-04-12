@@ -9,8 +9,9 @@ Le sujet ne demandait pas de mettre en place des tests pour la partie 4B, je ne 
 CONTRIBUTION PERSONNELLE :
 Elle consiste à générer un labyrinthe en utilisant un algorithme plus poussé que celui utilisé précédement.
 Elle utilise des notions de backtracking, et permet de générer des labyrinthes parfait (connexe, un seul chemin vers la sortie)
-La méthode permettant de le générer est contenue dans la fonction genLabyBack()
-Distmin fonctionne aussi.
+La méthode permettant de le générer est contenue dans la fonction genLabyBack(), bien commentée.
+Distmin fonctionne aussi dans ces labyrinthes.
+
 
 POUR TESTER LA CONTRIBUTION PERSONNELLE, COLLER DANS LE MAIN :
 int lignes = <valeur> // nombre de colonnes (un mur + une cellule = une colonne)
@@ -22,7 +23,6 @@ lab->affiche();
 
 #include <stack>
 #include <vector>
-//#include <Windows.h>
 #include <queue>
 #include <iostream>
 #include <ctime>
@@ -316,7 +316,8 @@ void Labyrinthe::genLaby(int nb)
 
 void Labyrinthe::genLabyBack()
 {
-    // On resize le labyrinthe on le remplit d'un quadrillage de murs (longueur et largeur impaires)
+    // On ajuste correctement la taille du labyrinthe on le remplit d'un quadrillage de murs. 
+    // L'algorithme consiste à casser ces murs jusqu'à obtenir le labyrinthe souhaité.
     this->lig = this->lig * 2 - 1;
     this->col = this->col * 2 - 1;
     int lig = this->lig;
@@ -325,46 +326,48 @@ void Labyrinthe::genLabyBack()
 
     for (int l = 0; l < lig; l++)
         for (int c = 0; c < col; c++)
-            if (l % 2 == 0 && c % 2 == 0) modifie(getID(l, c), 0);
-            else modifie(getID(l, c), 1);
+            if (l % 2 == 0 && c % 2 == 0) modifie(getID(l, c), 0); 
+            else modifie(getID(l, c), 1);   
     
-    // On ajoute la première case à la stack et on la marque
-    stack<int> pile;
+    // On ajoute la première case à la pile et on la marque
+    stack<int> pile;    // La pile qui va servir à mettre en place le backtracking
     pile.push(0);
     modifie(0,2);
 
-    // Tant que la pile n'est pas vide
+    // Tant que la pile n'est pas vide, le labyrinthe n'est pas terminé.
     while(!pile.empty())
     {
-        // On pop la pile pour traiter la cellule au sommet
+        // On pop la pile pour traiter la cellule au sommet. Celle cellule est appelée "current"
         int current = pile.top();
         pile.pop();
 
-        // On vérifie si la case a des voisins non visités
+        // On vérifie si la case a des voisins non visités. 
+        // Si ce n'est pas le cas, on l'abandonne et on passe à la prochaine cellule de la pile -> BACKTRACK
         vector<int> voisins = voisinsVides(current);
         if(!voisins.empty())
         {
-            // On push current à la pile pour la retraiter plus tard
+            // On push current à la pile pour la retraiter plus tard, car elle possède peut-être encore des voisins non visités.
             pile.push(current);
 
-            // On prend un voisin aléatoirement
+            // On prend un voisin non visité aléatoirement Celle cellule est appelée "next"
             int next = voisins[rand()%voisins.size()];
 
             // On retire le mur entre les deux
             modifie( (getLigne(current)+getLigne(next))/2 , (getCol(current)+getCol(next))/2 , 0 );
 
-            // On marque la prochaine cell et on l'ajoute à la pile
+            // On marque next comme visitée et on l'ajoute à la pile pour traiter ses voisins (si elle en a)
             modifie(next,2);
             pile.push(next);
         }
     }
 
+    // On affiche les cellules marquées.
     for (int l = 0; l < lig; l++)
         for (int c = 0; c < col; c++)
             if (lit(l,c) == 2) modifie(getID(l, c), 0);
 }
 
-// Méthode pour la génération backtracking
+// Méthode pour la génération backtracking. Elle rend un vecteur contenant toutes les cellules voisines vides et non visitées
 vector<int> Labyrinthe::voisinsVides(int id){
     vector<int> v;
     int idLig = getLigne(id);
