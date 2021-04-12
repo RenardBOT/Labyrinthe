@@ -1,16 +1,20 @@
 /*
 NOM : EVAN PETIT
-
 LA COMMANDE POUR COMPILER EST :
-gcc -Wall Labyrinthe.cpp -o Labyrinthe.exe
-
+g++ -Wall Labyrinthe.cpp -o Labyrinthe.exe
 POUR EXECUTER ./labyrinthe
 
-Le sujet ne demandait pas de mettre en place des tests pour la partie 4B
+Le sujet ne demandait pas de mettre en place des tests pour la partie 4B, je ne l'ai donc pas fait.
+
+CONTRIBUTION PERSONNELLE :
+Elle consiste à générer un labyrinthe en utilisant un algorithme plus poussé que celui utilisé précédement.
+Elle utilise des notions de backtracking, et permet de générer des labyrinthes parfait (connexe, un seul chemin vers la sortie)
+La méthode permettant de le générer est contenue dans la fonction genLabyBack()
+Distmin fonctionne aussi.
 
 POUR TESTER LA CONTRIBUTION PERSONNELLE, COLLER DANS LE MAIN :
-int lignes = <valeur>
-int colonnes = <valeur>
+int lignes = <valeur> // nombre de colonnes (un mur + une cellule = une colonne)
+int colonnes = <valeur> // nombre de lignes  (un mur + une cellule = une ligne)
 Labyrinthe* lab = new Labyrinthe(lignes, colonnes);
 lab->genLabyBack();
 lab->affiche();
@@ -18,7 +22,7 @@ lab->affiche();
 
 #include <stack>
 #include <vector>
-#include <Windows.h>
+//#include <Windows.h>
 #include <queue>
 #include <iostream>
 #include <ctime>
@@ -457,9 +461,15 @@ int Labyrinthe::distMin(int id1, int id2)
 int main(int argc, const char * argv[])
 {
     srand((unsigned)time(NULL));
-    Labyrinthe* lab2 = new Labyrinthe(20,40);
-    lab2->genLabyBack();
+
+    // CHANGER LE CODE DANS CE BLOC
+    // ---------------
+
+    Labyrinthe* lab2 = new Labyrinthe(10,10);
+    lab2->genLaby(50);
     lab2->affiche();
+
+    // ---------------
 
     return 0;
 }
